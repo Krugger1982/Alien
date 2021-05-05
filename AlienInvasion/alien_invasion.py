@@ -1,5 +1,6 @@
 import sys
 from settings import Settings
+from ship import Ship
 
 import pygame
 
@@ -17,6 +18,10 @@ class AlienInvasion:
 
 
 
+        self.ship = Ship(self)
+
+
+
     def run_game(self):
         """Запуск основного цикла игры"""
         while True:
@@ -24,8 +29,10 @@ class AlienInvasion:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-            # при каждом прохоже цикла прорисовывается экран
+            # при каждом проходе цикла прорисовывается экран
             self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()      # и отображается корабль
+            
             # Отображение послежнего прорисованнго экрана
             pygame.display.flip()
 
