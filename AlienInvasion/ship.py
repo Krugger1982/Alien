@@ -18,3 +18,5 @@ class Ship():
     def blitme(self):
         """Рисуем текущее место корабля"""
         self.screen.blit(self.image, self.rect)
+
+    
