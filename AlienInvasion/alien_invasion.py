@@ -13,10 +13,10 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
         
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().height
-        pygame.display.set_caption("Alien Invasion")
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)        # 
+        self.settings.screen_width = self.screen.get_rect().width                # задаем ширину экрана
+        self.settings.screen_height = self.screen.get_rect().height             # задаем высоту экрана
+        pygame.display.set_caption("Alien Invasion")                        # надпись вверху экрана
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -76,8 +76,9 @@ class AlienInvasion:
 
     def fire_bullet(self):
         """ Выстрел - создаем снаряд и включаем его в р-группу bullets"""
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
 
 
     def _update_screen(self):
