@@ -25,19 +25,13 @@ class AlienInvasion:
         """Запуск основного цикла игры"""
         while True:
             self._check_events()
-            # отслеживаем клавиатуру и мышь
+                                    # отслеживаем клавиатуру и мышь
             self.ship.update()
-            # отслеживаем изменения позиции корабля
-            self.bullets.update()
-            # И позиции всех снарядов
-
-            #Удаление снарядов, долеевших до верхнего края
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
-            
+                                    # отслеживаем изменения позиции корабля
+            self._update_bullets()
+                                    # И позиции всех снарядов            
             self._update_screen()
-            # обновление экрана с каждым проходом цикла
+                                    # обновление экрана с каждым проходом цикла
             
 
     def _check_events(self):
@@ -80,6 +74,17 @@ class AlienInvasion:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
+    def _update_bullets(self):
+        """ Обновление позиции снарядов и уничтожение старых снарядов"""
+
+        # Позиции снарядов
+        self.bullets.update()
+        
+        # Удаление старых снарядов
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <=0:
+                self.bullets.remove(bullet)
+                
 
     def _update_screen(self):
         """ Обновляет изображения на экране и отобразжает новый экран """
