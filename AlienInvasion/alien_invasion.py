@@ -2,6 +2,7 @@ import sys
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 
 import pygame
 
@@ -20,6 +21,9 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.aliens = pygame.sprite.Group()
+
+        self._create_fleet()
 
     def run_game(self):
         """Запуск основного цикла игры"""
@@ -95,12 +99,33 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         # Обновляем позиции всех сгруппированных снарядов
+        self.aliens.draw(self.screen)
+        # И позицию вражеского корабля 
 
         
         # Отображение последнего прорисованнoго экрана
         pygame.display.flip()
 
+    def _create_fleet(self):
+        """ Создаем флот пришельцеы"""   
+        
+        # Создание одного абстрактного пришельца. 
+        # Он нужен для расчетов ширины, чтоб не обращаться все время к аттрибуту rect         
+        alien = Alien(self)
+        alien_width = alien.rect.width
+        # Посчитаем сколько их уместится в ряду
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        number_aliens_x = available_space_x // (2 * alien_width)
 
+        # Создадим первый ряд
+        for alien_number in range(number_aliens_x):
+            # Создание очередного корабля и размещение его в ряду
+            alien = Alien(self)
+            alien.x = alien_width + 2 * alien_width * alien_number
+            alien.rect.x = alien.x
+            self.aliens.add(alien)          # Добавляем его в группу пришельцев
+
+        
         
 if __name__ == '__main__':
     # Создание экземпляра игры
