@@ -20,4 +20,7 @@ class Settings():
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 9
 
+        # Параметры чужих кораблей
+        self.alien_speed = 1.0
+
         

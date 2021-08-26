@@ -36,7 +36,8 @@ class AlienInvasion:
                                     # И позиции всех снарядов            
             self._update_screen()
                                     # обновление экрана с каждым проходом цикла
-            
+            self._update_aliens()
+                                    # Обновление пришельцев
 
     def _check_events(self):
         # отслеживаем клавиатуру и мышь
@@ -89,6 +90,10 @@ class AlienInvasion:
             if bullet.rect.bottom <=0:
                 self.bullets.remove(bullet)
                 
+    def _update_aliens(self):
+        """ Обновляет позиции всех чужих в их флоте"""
+        self.aliens.update()
+
 
     def _update_screen(self):
         """ Обновляет изображения на экране и отобразжает новый экран """

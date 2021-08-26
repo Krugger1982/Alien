@@ -7,6 +7,7 @@ class Alien(Sprite):
         """ Инициирует одного пришельца в его начальной позиции """
         super().__init__()
         self.screen = ai_game.screen
+        self.settings = ai_game.settings
 
         # Загружаем изображение с примоугольником rect
         self.image = pygame.image.load('images/alien.bmp')
@@ -18,3 +19,8 @@ class Alien(Sprite):
 
         # Сохранение горизонтальной позиции пришельца
         self.x = float(self.rect.x) 
+
+    def update(self):
+        """ Перемезает пришельцев вправо """
+        self.x += self.settings.alien_speed
+        self.rect.x = self.x
