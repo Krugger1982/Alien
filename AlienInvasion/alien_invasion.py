@@ -89,6 +89,23 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <=0:
                 self.bullets.remove(bullet)
+        # Действия по проверке коллизий (совпадения координат корабля пришельцев и снаряда)
+        self._check_bullet_alien_collisions()
+
+    def _check_bullet_alien_collisions(self):
+        # Проверка попадания в пришельцев
+        # при попадании и снаряд и пришелец удаляются
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        # метод groupcollide() разбирается с коллизиями.
+        # Он проверяет наличие коллизий между снарядами и вражескими кораблями,
+        # и удаляет обоих участников коллизии
+
+        # При уничтожении всех кораблей противника создаем новый флот
+        if not self.aliens:
+            self.bullets.empty()
+            self._create_fleet()
+
+        
                 
     def _update_aliens(self):
         """ Обновляет позиции всех чужих в их флоте"""
