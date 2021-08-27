@@ -1,8 +1,10 @@
 import sys
+from time import sleep
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 
 import pygame
 
@@ -19,6 +21,9 @@ class AlienInvasion:
         self.settings.screen_height = self.screen.get_rect().height             # задаем высоту экрана
         pygame.display.set_caption("Alien Invasion")                        # надпись вверху экрана
 
+        # Создание рабочего экземпляра для хранения игровой статистики
+        self.stats = GameStats(self)
+        
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -112,6 +117,21 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+        # Проверка коллизий пришелец-корабль
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self._ship_hit()
+
+        # Проверка, не добрались ли пришельцы до нинего края экрана
+        self._check_aliens_bottom()
+
+    def _check_aliens_bottom(self):
+        """Проверяет, не добрались ли пришельцы до нижнего края экрана"""
+        screen_rect = self.screen.get_rect()
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                self._ship_hit()
+                # При достижении любым пришельцем нижнего края экрана, происходит одна "смерть" своего корабля
+                break
 
     def _update_screen(self):
         """ Обновляет изображения на экране и отобразжает новый экран """
@@ -175,7 +195,22 @@ class AlienInvasion:
             alien.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
 
+    def _ship_hit(self):
+        """ Обрабатывает гибель своего корабля  от столкновения с пришельцем"""
 
+        # Уменьшение количества "жизней"
+        self.stats.ships_left -= 1
+
+        # Очистка списка пришельцев и списка снарядов
+        self.aliens.empty()
+        self.bullets.empty()
+
+        # Сoздание нового флота кораблей пришельцев
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # Пауза 0,5 секунд
+        sleep(0.5)
 
         
 if __name__ == '__main__':

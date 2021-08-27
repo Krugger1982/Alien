@@ -38,4 +38,7 @@ class Ship():
         """Рисуем текущее место корабля"""
         self.screen.blit(self.image, self.rect)
 
-    
+    def center_ship(self):
+        """ В начале каждой игры свой корабль устанавливается в центре нижней части экрана"""
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)
