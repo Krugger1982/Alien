@@ -5,6 +5,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
+from button import Button
 
 import pygame
 
@@ -20,7 +21,7 @@ class AlienInvasion:
         self.settings.screen_width = self.screen.get_rect().width                # задаем ширину экрана
         self.settings.screen_height = self.screen.get_rect().height             # задаем высоту экрана
         pygame.display.set_caption("Alien Invasion")                        # надпись вверху экрана
-
+        
         # Создание рабочего экземпляра для хранения игровой статистики
         self.stats = GameStats(self)
         
@@ -30,22 +31,27 @@ class AlienInvasion:
 
         self._create_fleet()
 
+        # Создадим кнопку PLAY
+        self.play_button = Button(self, 'PLAY')
+
+
+        
     def run_game(self):
         """Запуск основного цикла игры"""
         while True:
-            self._check_events()
-                                    # отслеживаем клавиатуру и мышь
-            self.ship.update()
-                                    # отслеживаем изменения позиции корабля
-            self._update_bullets()
-                                    # И позиции всех снарядов            
-            self._update_screen()
-                                    # обновление экрана с каждым проходом цикла
-            self._update_aliens()
-                                    # Обновление пришельцев
+            self._check_events()        # отслеживаем клавиатуру и мышь
+            
+            if self.stats.game_active:      # Только в активной игре:
+                self.ship.update()          # ... отслеживаем изменения позиции корабля
+                self._update_bullets()      # ... И позиции всех снарядов            
+                self._update_aliens()       # ... Обновление пришельцев
+                
+            self._update_screen()       # обновление экрана с каждым проходом цикла
 
+                
+        
     def _check_events(self):
-        # отслеживаем клавиатуру и мышь
+        # отслеживаение клавиатуры и мыши
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -54,7 +60,33 @@ class AlienInvasion:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
 
+    def _check_play_button(self, mouse_pos):
+        """Запускает новую игру нажатием кнопки PLAY"""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        #Метод /collidepoint/ проверяет совпадение координат клика мыши /mouse_pos/ с объектом /play_button/
+        
+        if button_clicked and not self.stats.game_active:
+
+            # Сначала сбрасываем игровую статистику
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            # Очистка списка пришельцев и списка снарядов
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # Сoздание нового флота кораблей пришельцев
+            self._create_fleet()
+            self.ship.center_ship()
+
+            #Скрываем указатель мыши
+            pygame.mouse.set_visible(False)
+            
+            
     def _check_keydown_events(self, event):
         # реакция на нажатие клавиш
         if event.key == pygame.K_RIGHT:
@@ -145,6 +177,9 @@ class AlienInvasion:
         self.aliens.draw(self.screen)
         # И позицию вражеского корабля 
 
+        # Кнопка PLAY отображается только при неактивной игре
+        if not self.stats.game_active:
+            self.play_button.draw_button()
         
         # Отображение последнего прорисованнoго экрана
         pygame.display.flip()
@@ -197,20 +232,23 @@ class AlienInvasion:
 
     def _ship_hit(self):
         """ Обрабатывает гибель своего корабля  от столкновения с пришельцем"""
+        if self.stats.ships_left > 0:
+            # Уменьшение количества "жизней"
+            self.stats.ships_left -= 1
 
-        # Уменьшение количества "жизней"
-        self.stats.ships_left -= 1
+            # Очистка списка пришельцев и списка снарядов
+            self.aliens.empty()
+            self.bullets.empty()
 
-        # Очистка списка пришельцев и списка снарядов
-        self.aliens.empty()
-        self.bullets.empty()
+            # Сoздание нового флота кораблей пришельцев
+            self._create_fleet()
+            self.ship.center_ship()
 
-        # Сoздание нового флота кораблей пришельцев
-        self._create_fleet()
-        self.ship.center_ship()
-
-        # Пауза 0,5 секунд
-        sleep(0.5)
+            # Пауза 0,5 секунд
+            sleep(0.5)
+        else:
+            self.stats.game_active = False      # Останавливаем игру, чтоб снова появилась кнопка PLAY
+            pygame.mouse.set_visible(True)      # И снова делаем видимой мышь, чтоб можно было опять нажать на PLAY
 
         
 if __name__ == '__main__':

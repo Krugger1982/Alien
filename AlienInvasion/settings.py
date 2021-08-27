@@ -22,7 +22,7 @@ class Settings():
 
         # Параметры чужих кораблей
         self.alien_speed = 0.3
-        self.ship_limit = 3
+        self.ship_limit = 1
         self.fleet_drop_speed = 50
         # self.fleet_drop_speed - это величина, на которую "шагает" вражеский флот дойдя до края экрана 
         self.fleet_direction = 1
