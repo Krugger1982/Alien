@@ -22,5 +22,9 @@ class Settings():
 
         # Параметры чужих кораблей
         self.alien_speed = 1.0
-
+        self.fleet_drop_speed = 10
+        # self.fleet_drop_speed - это величина, на которую "шагает" вражеский флот дойдя до края экрана 
+        self.fleet_direction = 1
+        # fleet_direction - это флаг направления движения кораблей. 1 - вправо, -1 - влево
+        
         
