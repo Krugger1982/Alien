@@ -11,7 +11,7 @@ class Settings():
         self.bg_color = (230, 230, 230)
 
         # параметры нашего корабля
-        self.ship_limit = 1
+        self.ship_limit = 3
 
         # параметры пули
         self.bullet_width = 3

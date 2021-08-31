@@ -81,6 +81,7 @@ class AlienInvasion:
             self.stats.game_active = True
             self.sb.prep_score()            # и обнуляем счет игры
             self.sb.prep_level()            # и обнуляем счетчик уровней
+            self.sb.prep_ships()
 
             # Очистка списка пришельцев и списка снарядов
             self.aliens.empty()
@@ -256,6 +257,7 @@ class AlienInvasion:
         if self.stats.ships_left > 0:
             # Уменьшение количества "жизней"
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
             # Очистка списка пришельцев и списка снарядов
             self.aliens.empty()

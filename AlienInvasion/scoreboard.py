@@ -1,10 +1,13 @@
 import pygame.font
+from pygame.sprite import Group
+from ship import Ship
 
 class Scoreboard():
     """ Класс для хранения и вывода цифровой инфомации"""
 
     def __init__(self, ai_game):
         """ Инициализирует атрибуты подсчета очков"""
+        self.ai_game = ai_game        
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
@@ -17,6 +20,7 @@ class Scoreboard():
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
+        self.prep_ships()
 
     def prep_score(self):
         """ преобразует надпись с текстом, отображающую счет, в графическую катинку
@@ -38,6 +42,7 @@ class Scoreboard():
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
+        self.ships.draw(self.screen)
         
     def prep_high_score(self):
         """ преобразует надпись о рекрдном счете в картинку"""
@@ -64,8 +69,21 @@ class Scoreboard():
         # Вывод уровня в верху экрана справа, под счетом
         self.level_rect = self.level_image.get_rect()
         self.level_rect.right = self.screen_rect.right
-        self.level_rect.top = self.score_rect.bottom + 20      
+        self.level_rect.top = self.score_rect.bottom + 20
 
+    def prep_ships(self):
+        """ Проверяет сколько кораблей ("жизней") осталось у игрока"""
+        self.ships = Group()
+        # Cоздаем группу кораблей (экземплр класса Group
+        for ship_number in range(self.stats.ships_left):
+            ship = Ship(self.ai_game)           # Создаем объект корабля
+            ship.rect.x = 10 + ship.rect.width * ship_number
+            ship.rect.y = 10
+            # задаем их координаты: отступы слева и сверху по10 пикс, расположены в ряд в левом верхнем углу
+            self.ships.add(ship)
+
+
+            
 
 
         
