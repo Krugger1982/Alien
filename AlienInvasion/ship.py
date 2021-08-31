@@ -28,9 +28,9 @@ class Ship():
         # обновляет позицию с учетом флага
         # Обновляется не rect.x а сама переменная х
         if self.moving_right and self.rect.right < self.screen_rect.right:
-            self.x += self.settings.ship_speed
+            self.x += self.settings.ship_speed_factor
         if self.moving_left and self.rect.left > 0:
-            self.x -= self.settings.ship_speed
+            self.x -= self.settings.ship_speed_factor
         # обновление атрибута rect на основани х
         self.rect.x = self.x
         

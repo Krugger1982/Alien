@@ -6,6 +6,8 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
+
 
 import pygame
 
@@ -24,6 +26,8 @@ class AlienInvasion:
         
         # Создание рабочего экземпляра для хранения игровой статистики
         self.stats = GameStats(self)
+        # ... и панели результатов
+        self.sb = Scoreboard(self)
         
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -71,9 +75,11 @@ class AlienInvasion:
         
         if button_clicked and not self.stats.game_active:
 
-            # Сначала сбрасываем игровую статистику
+            # Сначала сбрасываем игровую статистику и настройки
+            self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.sb.prep_score()            # и обнуляем счет игры
 
             # Очистка списка пришельцев и списка снарядов
             self.aliens.empty()
@@ -137,10 +143,19 @@ class AlienInvasion:
         # Он проверяет наличие коллизий между снарядами и вражескими кораблями,
         # и удаляет обоих участников коллизии
 
+        # при попадании также увеличивается счет
+        if collisions:
+            # если словарь не пуст
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+            self.sb.prep_score()
+            self.sb.check_high_score()
+            
         # При уничтожении всех кораблей противника создаем новый флот
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
         
                 
@@ -175,7 +190,10 @@ class AlienInvasion:
             bullet.draw_bullet()
         # Обновляем позиции всех сгруппированных снарядов
         self.aliens.draw(self.screen)
-        # И позицию вражеского корабля 
+        # И позицию вражеского корабля
+
+        # Выводим на экран прямоугольничек со счетом очков
+        self.sb.show_score()
 
         # Кнопка PLAY отображается только при неактивной игре
         if not self.stats.game_active:
@@ -207,7 +225,7 @@ class AlienInvasion:
         # ... и подсчитаем сколько мы можем уместить рядов на экране
         ship_height = self.ship.rect.height
         # ОСтавим место для своего корабля  - его высоту плюс троекратную высоту вражеского корабля
-        available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
+        available_space_y = (self.settings.screen_height - (8 * alien_height) - ship_height)
 
         # определяем количество рядов
         number_rows = available_space_y // (2 * alien_height)
