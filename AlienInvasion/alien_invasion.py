@@ -80,6 +80,7 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.sb.prep_score()            # и обнуляем счет игры
+            self.sb.prep_level()            # и обнуляем счетчик уровней
 
             # Очистка списка пришельцев и списка снарядов
             self.aliens.empty()
@@ -156,6 +157,8 @@ class AlienInvasion:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+            self.stats.level += 1   # сдвигаем счетчик уровней
+            self.sb.prep_level()    # обновляем изображение уровня
 
         
                 

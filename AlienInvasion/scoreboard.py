@@ -16,6 +16,7 @@ class Scoreboard():
         # подготовка изображения
         self.prep_score()
         self.prep_high_score()
+        self.prep_level()
 
     def prep_score(self):
         """ преобразует надпись с текстом, отображающую счет, в графическую катинку
@@ -36,6 +37,7 @@ class Scoreboard():
         """Выводим счет на экран"""
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
+        self.screen.blit(self.level_image, self.level_rect)
         
     def prep_high_score(self):
         """ преобразует надпись о рекрдном счете в картинку"""
@@ -46,13 +48,23 @@ class Scoreboard():
         # Вывод рекордных очkов в верху экрана посередине
         self.high_score_rect = self.high_score_image.get_rect()
         self.high_score_rect.center = self.screen_rect.center
-        self.high_score_rect.top = 20
+        self.high_score_rect.top = self.score_rect.top
 
     def check_high_score(self):
         """ проверяет, не появился ли новый рекорд """
         if self.stats.score > self.stats.high_score:            # Если кто-то побил рекорд
             self.stats.high_score = self.stats.score            # Новый рекорд заносим в память
             self.prep_high_score()
+
+    def prep_level(self):
+        """ Преобразуем уровень в графическое изображение"""
+        level_str = 'Level  ' + str(self.stats.level)
+        self.level_image = self.font.render(level_str, True,self.text_color, self.settings.bg_color)
+
+        # Вывод уровня в верху экрана справа, под счетом
+        self.level_rect = self.level_image.get_rect()
+        self.level_rect.right = self.screen_rect.right
+        self.level_rect.top = self.score_rect.bottom + 20      
 
 
 
