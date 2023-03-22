@@ -41,11 +41,13 @@ $ python3 -m venv venv
 ```$ source venv/bin/activate``` (команда для Linux/MacOS)  
 или:  
 ```$ source venv/Scripts/activate``` (команда для Windows)  
-при активированном виртуальном окружении установите зависимости из файла requirements.txt
-выполните команду:  
+
+при активированном виртуальном окружении выполните команду:  
+
 ```$ pip install pygame ```
 
 В папке с файлом alien_invasion.py выполните команду запуска игры:  
+
 ```$ python3 alien_invasion.py ```  
 
 Или откройте сам файл и запустите его на выполнение.
